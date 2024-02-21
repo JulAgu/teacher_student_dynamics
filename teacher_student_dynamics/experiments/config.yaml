@@ -23,7 +23,7 @@ ode:
     timestep: 0.001
 
 data:
-    input_source: hidden_manifold # iid_gaussian, hidden_manifold
+    input_source: iid_gaussian # iid_gaussian, hidden_manifold
 
     precompute_data: 1000
 
@@ -62,7 +62,7 @@ testing:
 
 training:
     train_batch_size: 1
-    total_training_steps: 100000000
+    total_training_steps: 30000000
     optimiser: sgd
     learning_rate: 0.2
     loss_function: mse
@@ -75,17 +75,17 @@ training:
     freeze_units: [0, 0]
 
 networks:
-    input_dimension: 10000
+    input_dimension: 1000
     output_dimension: 1
     nonlinearity: scaled_erf
     # student
-    student_hidden: 2
+    student_hidden: 6
     student_bias: False
     student_initialisation_std: 0.001
     multi_head: False
     # teacher(s)
     num_teachers: 2
-    teacher_hidden: 2
+    teacher_hidden: 3
     teacher_bias: False
     teacher_heads_one: False # make all teacher head weights 1 (like fig. 3 of HMM paper)
     unit_norm_teacher_head: True
@@ -94,8 +94,8 @@ networks:
     teacher_configuration: identical # rotation, identical, node_sharing
 
     rotation_teachers:
-        feature_rotation_alpha: 0.
-        readout_rotation_alpha: 0.
+        feature_rotation_alpha: 0.5
+        readout_rotation_alpha: 0.1
 
     node_sharing_teachers:
         num_shared_nodes: 1
@@ -105,7 +105,7 @@ curriculum:
     # condition on which to switch task (fixed_period, switch_steps, or loss_thresholds)
     stopping_condition: switch_steps              
   
-    switch_steps: [1500000000]
+    switch_steps: [3000000]
     fixed_period: 1
     # loss threshold under which teacher is changed
     loss_thresholds: [0.0001]
@@ -113,11 +113,11 @@ curriculum:
 replay:
     schedule:  # periodic or None for no replay
 
-    strategy: gamma # uniform or gamma (hmm)
+    strategy: uniform # uniform or gamma (hmm)
     
     periodic_replay:
         # how often to interleave previous examples
-        interleave_period: 100
+        interleave_period: 
         # number of examples from previous task to show in each interleaving                                      
         interleave_duration: 1
 
